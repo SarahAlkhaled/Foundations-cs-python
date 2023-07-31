@@ -114,11 +114,7 @@ def disableTicket(ticket_list):#allows the admin to remove a ticket from the tic
 def runEvents(ticket_list):#to display and process events that are scheduled for the current day
     today = datetime.now().strftime("%Y%m%d")
 
-    today_events = []
-    for ticket in ticket_list:
-        ticket_id, event_id, username, date_of_event, priority = ticket
-        if date_of_event == today:
-            today_events.append(ticket)
+    today_events = [ticket for ticket in ticket_list if ticket[3] == today]
 
     if not today_events:
         print("No events found for today.")
@@ -129,11 +125,16 @@ def runEvents(ticket_list):#to display and process events that are scheduled for
 
     print("Today's Events sorted by priority:")
     for event in today_events:
-        print("Ticket ID: " + event[0] + ", Event ID: " + event[1] + ", Username: " + event[2] + ", Priority: " + event[4])
-    # Remove today's events from the main ticket_list
+        ticket_id, event_id, username, date_of_event, priority = event
+        print("Ticket ID: " + ticket_id + ", Event ID: " + event_id + ", Username: " + username + ", Priority: " + priority)
+
+    # Update the ticket_list to remove today's events
     ticket_list = [ticket for ticket in ticket_list if ticket not in today_events]
+
     # Save the updated ticket_list to the text file
     saveTickets(ticket_list, "tickets_txt")
+
+
 ########## 
 def saveTickets(ticket_list, tickets_txt):#function to save the tickets in the txt file
     with open(tickets_txt, 'w') as file:
@@ -170,6 +171,58 @@ def displayUserMenu():
 
 ########## 
 def main():
+    name = input("Enter your name, please: ")
+    print("Welcome here, " + name + "!")
+    
+    # Create an empty list to hold the tickets
+    ticket_list = []
+
+    # Load tickets from the text file into the list
+    with open("tickets_txt", 'r') as file:
+        for line in file:
+            ticket_data = line.strip().split(',')
+            ticket_list.append(tuple(ticket_data))
+
+    user_type = input("Enter whether you are an admin or a user: ").lower()
+    user_role = login()
+
+    if user_role == "Admin" and user_type == "admin":
+        # Admin menu loop
+        while True:
+            displayAdminMenu()
+            choice = input("Enter the number corresponding to the operation you want to perform (1-7): ")
+            if choice == "1":
+                displayStatistics(ticket_list)
+            elif choice == "2":
+                bookATicket(ticket_list)
+            elif choice == "3":
+                displayAllTickets(ticket_list)
+            elif choice == "4":
+                changeTicketsPriority(ticket_list)
+            elif choice == "5":
+                disableTicket(ticket_list)
+            elif choice == "6":
+                runEvents(ticket_list)
+            elif choice == "7":
+                print("Exiting...")
+                break
+            else:
+                print("Invalid input. Please try again.")
+    elif user_role == "User" and user_type == "user":
+        # User menu loop
+        while True:
+            displayUserMenu()
+            choice = input("Enter the number corresponding to the operation you want to perform (1-2): ")
+            if choice == "1":
+                bookATicket(ticket_list)
+            elif choice == "2":
+                print("Exiting the program...")
+                break
+            else:
+                print("Invalid input. Please try again.")
+    else:
+        print("Incorrect Username and/or Password or invalid user type. Exiting the program...")
+main()
     name = input("Enter your name, please: ")
     print("Welcome here, " + name + "!")
     
