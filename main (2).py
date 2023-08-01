@@ -78,7 +78,7 @@ def selection_sort(tickets):
             elif tickets[j][3] == tickets[min_idx][3] and tickets[j][1] < tickets[min_idx][1]:
                 min_idx = j
         tickets[i], tickets[min_idx] = tickets[min_idx], tickets[i]
-###############################3
+################
 def displayAllTickets(ticket_list):
     if not ticket_list:
         print("No tickets found.")
@@ -166,8 +166,7 @@ def saveTickets(ticket_list, tickets_txt):#O(n),n being the number of tickets in
     with open(tickets_txt, 'w') as file:
         for ticket in ticket_list:
             ticket_id, event_id, username, event_datetime, priority = ticket
-            formatted_event_id = "ev" + str(event_id).zfill(3)
-            file.write(ticket_id + "," + formatted_event_id + "," + username + "," + event_datetime + "," + str(priority) + "\n")
+            file.write(ticket_id + "," + event_id + "," + username + "," + event_datetime + "," + str(priority) + "\n")
 ########## 
  #allow a user (admin or regular user) to book a new ticket for an event
 def bookATicket(ticket_list):#O(1),constant time
